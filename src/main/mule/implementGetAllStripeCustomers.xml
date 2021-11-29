@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="implementStripeGetCustomerByIDFlow" doc:id="cc8af98e-67b8-4515-92bb-86ba0a33cbd3" >
+		<http:request method="GET" doc:name="/GET CustomerById" doc:id="605463c4-79e1-4e15-9978-764d02d23fca" config-ref="HTTP_Request_configuration" path='#["/v1/customers/"   ++ vars.id as String]' >
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Authorization" : "Bearer sk_test_51Joom0SIK1l9CxHKQQPnntwTvwWYoZZbuqE6tSxF9oClUGRX1aeR8wlqZfh6flAXSxBpSVs3Fs2ZIIU8tnnHqqXR00dLEhEjgu"
+}]]]></http:headers>
+		</http:request>
+		<ee:transform doc:name="Copy_of_Transform Message" doc:id="8a23c1a1-0778-478a-b806-e0ef1405cc0c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  successful: true,
+  status: 201,
+  response:  "Contact created in Stripe with Id " ++ payload.id as String
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

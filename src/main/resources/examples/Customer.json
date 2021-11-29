@@ -1,0 +1,38 @@
+{
+  "id": "",
+  "name": {
+    "nickName": "Sue",
+    "suffix": "DDE",
+    "prefix": "Dr.",
+    "family": "Carter",
+    "given": "Susan",
+    "middle": "Katherine"
+  },
+  "phone": {
+    "name": "mobile",
+    "display": "(808)555-1212x103",
+    "default": true,
+    "countryCode": "01",
+    "areaCode": "607",
+    "directory": "555",
+    "line": "4030",
+    "extension": "202"
+  },
+  "email": {
+    "name": "work",
+    "default": true,
+    "email": "scarter@lexion.com"
+  },
+  "address": {
+    "name": "home",
+    "default": true,
+    "addressLine1": "1 Main Street",
+    "addressLine2": "Apt. 1",
+    "city": "Charles Town",
+    "region": "WV",
+    "country": "United States",
+    "countryCode": "USA",
+    "postalCode": "23232-4545",
+    "timeZone": "UTC-5"
+  }
+}

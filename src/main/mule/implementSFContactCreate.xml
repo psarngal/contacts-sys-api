@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="7810db24-632c-4875-937e-6718a50c3a74" >
+		<salesforce:basic-connection username="pawansarngal@gmail.com" password="Simu@123!@#$" securityToken="ITxx6ja6F3YPc1D4P9G1nAgX" />
+	</salesforce:sfdc-config>
+	<flow name="implementSFContactCreateFlow" doc:id="3a3c70ba-3d1f-4a6d-b988-824962909ec4" >
+		<ee:transform doc:name="Transform Message" doc:id="bdbb435c-00eb-4901-9bff-ec6f4e6c3f72" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	LastName: payload.name.family,
+	FirstName: payload.name.given,
+	Salutation: payload.name.prefix,
+	MailingStreet: payload.address.addressLine1,
+	MailingCity: payload.address.city,
+	MailingState: payload.address.addressLine2,
+	MailingPostalCode: payload.address.postalCode,
+	MailingCountry: payload.address.country,
+	MobilePhone: payload.phone.display,
+	Email: payload.email.email
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="fe189deb-9c0e-4f4f-967e-5ad5b57a3585" message="#[payload]"/>
+		<salesforce:create doc:name="Create" doc:id="0d7e4608-197a-44c9-b987-b8e69e1c4731" config-ref="Salesforce_Config" type="Contact"/>
+		<choice doc:name="Choice" doc:id="d2faeb6b-30e3-4eac-ae60-2da6c6a0e2df" >
+			<when expression="#[payload.successful == 'false']">
+				<ee:transform doc:name="Transform Message" doc:id="1d897f22-3049-4f35-901e-1befd3bebe71">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  successful: false,
+  status: 400,
+  response:  payload.items.statusCode as String
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<set-variable value="400" doc:name="Set Variable" doc:id="ef33c80c-5a45-4ca0-ae81-4340419a3781" variableName="httpStatus"/>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="64e2ecd2-7064-4017-9f58-9e701f9f3dc7" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  successful: true,
+  status: 201,
+  response:  "Contact created in SFDC with Id " ++ payload.items.payload.id as String
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="b899521c-b9fa-4c6d-8f64-70a60c7f5232" message="#[payload]"/>
+	</flow>
+</mule>

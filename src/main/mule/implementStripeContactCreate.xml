@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="6bff19eb-a05b-4d24-973d-1d918cd43b02" >
+		<http:request-connection protocol="HTTPS" host="api.stripe.com" port="443" />
+	</http:request-config>
+	<flow name="implementStripeContactCreateFlow" doc:id="8293a740-b81f-416f-8f60-a2ab32645e72" >
+		<ee:transform doc:name="Transform Message" doc:id="c2d43081-508e-431c-8832-cdd70e21bd56" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/x-www-form-urlencoded
+---
+{
+	email: payload.email.email,
+	name: payload.name.given as String default "" ++ " "++ payload.name.family as String default "",
+	phone: payload.phone.display
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request method="POST" doc:name="Request" doc:id="b24cccf8-ba22-425a-b122-e29f8664f317" config-ref="HTTP_Request_configuration" path="/v1/customers">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Authorization" : "Bearer sk_test_51Joom0SIK1l9CxHKQQPnntwTvwWYoZZbuqE6tSxF9oClUGRX1aeR8wlqZfh6flAXSxBpSVs3Fs2ZIIU8tnnHqqXR00dLEhEjgu"
+}]]]></http:headers>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="6f3565d9-9792-43db-a5b2-74c40bdc3b14" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  successful: true,
+  status: 201,
+  response:  "Contact created in Stripe with Id " ++ payload.id as String
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

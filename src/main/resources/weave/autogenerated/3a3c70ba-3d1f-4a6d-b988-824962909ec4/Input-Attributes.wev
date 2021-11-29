@@ -1,0 +1,23 @@
+%dw 2.0
+
+type auto_3a3c70ba_3d1f_4a6d_b988_824962909ec4_Input_Attributes = {|
+  clientCertificate?: {|
+    publicKey?: {|  |}, 
+    "type"?: String, 
+    encoded?: Binary
+  |}, 
+  headers: {| correlationId?: String |}, 
+  listenerPath: String, 
+  method: String, 
+  queryParams: {|  |}, 
+  queryString: String, 
+  relativePath: String, 
+  remoteAddress: String, 
+  requestPath: String, 
+  requestUri: String, 
+  scheme: String, 
+  uriParams: {| accountName: "SFDC" | "STRIPE" |}, 
+  version: String, 
+  localAddress: String
+|}
+

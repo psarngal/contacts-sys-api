@@ -1,0 +1,46 @@
+%dw 2.0
+
+type auto_3a3c70ba_3d1f_4a6d_b988_824962909ec4_Input_Payload = {
+  address?: {
+    country?: String, 
+    "default"?: Boolean, 
+    city: String, 
+    countryCode: String, 
+    postalCode?: String, 
+    name?: String, 
+    addressLine1: String, 
+    timeZone?: String, 
+    addressLine2?: String, 
+    region?: String, 
+    _?: Any
+  } {"description": "The address data structure has generic field names designed to be more international.  Thus, postalCode rather than zipCode."}, 
+  phone?: {
+    "default": Boolean, 
+    areaCode?: String, 
+    extension?: String, 
+    countryCode?: String, 
+    line?: String, 
+    display?: String, 
+    name: String, 
+    directory?: String, 
+    _?: Any
+  } {"description": "A phone number data type, broken down into its component fields."}, 
+  name: {
+    given: String, 
+    middle?: String, 
+    nickName?: String, 
+    prefix?: String, 
+    family: String, 
+    suffix?: String, 
+    _?: Any
+  } {"description": "Example of the name data structure.  Field names are generalized since first and last are not always accurate."}, 
+  id?: String, 
+  email?: {
+    "default": Boolean, 
+    name: String, 
+    email: String, 
+    _?: Any
+  } {"description": "An email data structure"}, 
+  _?: Any
+} {"description": "Salesforce Contact Type"}
+
